@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">AuthLib</string>
+    <string name="bind_failed_msg">请确认已经安装了米家，并且更新到最新的版本</string>
+</resources>
