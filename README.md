@@ -58,6 +58,13 @@ public class AuthConstants {<br>
     public static final String EXTRA_USER_ID = "extra_user_id";<br>
 }<br>
 
+### 5最后需要在onDestroy里面释放
+ @Override<br>
+    protected void onDestroy() {<br>
+        super.onDestroy();<br>
+        IAuthMangerImpl.getInstance().release();<br>
+    }<br>
+
 
 具体的可以参考demo
  
