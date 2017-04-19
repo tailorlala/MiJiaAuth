@@ -14,10 +14,17 @@ android {
 
     }
     buildTypes {
-        release {
+        debug {
+            buildConfigField("boolean","IS_DEBUG_BUILD_TYPE","true");
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+        release {
+            buildConfigField("boolean","IS_DEBUG_BUILD_TYPE","true");
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+
     }
 }
 

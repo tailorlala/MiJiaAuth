@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.xiaomi.smarthome.authlib.AuthCode;
 import com.xiaomi.smarthome.authlib.AuthConstants;
-import com.xiaomi.smarthome.authlib.AuthManager;
+import com.xiaomi.smarthome.authlib.IAuthMangerImpl;
 import com.xiaomi.smarthome.authlib.IAuthResponse;
 
 public class AuthActivity extends AppCompatActivity {
@@ -31,22 +31,24 @@ public class AuthActivity extends AppCompatActivity {
         mAppIcon = (ImageView) findViewById(R.id.app_icon);
 
         mAuthBtn.setVisibility(View.GONE);
-        AuthManager.getInstance().initAuth(AuthActivity.this);///初始化
+        IAuthMangerImpl.getInstance().init(AuthActivity.this);///初始化
+
         mAuthBtn2.setOnClickListener(new View.OnClickListener() {
                                          @Override
                                          public void onClick(View v) {
                                              Bundle bundle = new Bundle();
                                              bundle.putString(AuthConstants.EXTRA_APPLICATION_ID, "44212592383956891");
-                                             AuthManager.getInstance().callAuth(AuthActivity.this, bundle, AuthCode.REQUEST_CODE_CALL_AUTH, new IAuthResponse() {
+                                             //发起授权
+                                             IAuthMangerImpl.getInstance().callAuth(AuthActivity.this, bundle, AuthCode.REQUEST_CODE_CALL_AUTH, new IAuthResponse() {
                                                          @Override
                                                          public void onSuccess(int i, final Bundle bundle) {
                                                              if (bundle != null) {
                                                                          StringBuilder sb = new StringBuilder();
                                                                          sb.append("结果：").append("\n")
-                                                                                 .append("resultCode：").append(bundle.getInt("extra_result_code", -1)).append("\n")
-                                                                                 .append("resultMsg：").append(bundle.getString("extra_result_msg", "")).append("\n")
-                                                                                 .append("token：").append(bundle.getString("extra_token", "")).append("\n")
-                                                                                 .append("user_id").append(bundle.getString("extra_user_id"));
+                                                                                 .append("resultCode：").append(bundle.getInt(AuthConstants.EXTRA_RESULT_CODE, -1)).append("\n")
+                                                                                 .append("resultMsg：").append(bundle.getString(AuthConstants.EXTRA_RESULT_MSG, "")).append("\n")
+                                                                                 .append("token：").append(bundle.getString(AuthConstants.EXTRA_TOKEN, "")).append("\n")
+                                                                                 .append("user_id").append(bundle.getString(AuthConstants.EXTRA_USER_ID));
 
                                                                          mResult.setText(sb);
                                                              }
@@ -56,10 +58,10 @@ public class AuthActivity extends AppCompatActivity {
                                                          public void onFail(int i, Bundle bundle) {
                                                              StringBuilder sb = new StringBuilder();
                                                              sb.append("结果：").append("\n")
-                                                                     .append("resultCode：").append(bundle.getInt("extra_result_code", -1)).append("\n")
-                                                                     .append("resultMsg：").append(bundle.getString("extra_result_msg", "")).append("\n")
-                                                                     .append("token：").append(bundle.getString("extra_token", "")).append("\n")
-                                                                     .append("user_id").append(bundle.getString("extra_user_id"));
+                                                                     .append("resultCode：").append(bundle.getInt(AuthConstants.EXTRA_RESULT_CODE, -1)).append("\n")
+                                                                     .append("resultMsg：").append(bundle.getString(AuthConstants.EXTRA_RESULT_MSG, "")).append("\n")
+                                                                     .append("token：").append(bundle.getString(AuthConstants.EXTRA_TOKEN, "")).append("\n")
+                                                                     .append("user_id").append(bundle.getString(AuthConstants.EXTRA_USER_ID));
                                                              mResult.setText(sb);
                                                          }
                                                      }
@@ -69,28 +71,10 @@ public class AuthActivity extends AppCompatActivity {
         );
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        Log.d("renlei", "onActivityResult" + requestCode + "requestCode" + resultCode + "data" + data);
-        if (data != null) {
-            Log.d("renlei", "token" + data.getStringExtra("extra_token"));
-            Bundle bundle = data.getExtras();
-            if (bundle != null) {
-                StringBuilder sb = new StringBuilder();
-                sb.append("结果：").append("\n")
-                        .append("resultCode：").append(bundle.getInt("extra_result_code", -1)).append("\n")
-                        .append("resultMsg：").append(bundle.getString("extra_result_msg", "")).append("\n")
-                        .append("token：").append(bundle.getString("extra_token", "")).append("\n")
-                        .append("user_id").append(bundle.getString("extra_user_id"));
-                mResult.setText(sb);
-            }
-        }
-    }
 
     @Override
     protected void onDestroy() {
-//        AuthManager.getInstance().release();
         super.onDestroy();
+        IAuthMangerImpl.getInstance().release();
     }
 }

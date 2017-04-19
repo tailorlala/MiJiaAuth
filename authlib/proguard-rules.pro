@@ -24,10 +24,11 @@
 # 混淆时所采用的算法
 -optimizations !code/simplification/arithmetic,!field/*,!class/merging/*
 
--keep class com.xiaomi.smarthome.authlib.AuthManager{
-       public boolean initAuth(android.content.Context);
-       public boolean callAuth(android.content.Context, android.os.Bundle,int,com.xiaomi.smarthome.authlib.IAuthResponse);
-       public static com.xiaomi.smarthome.authlib.AuthManager getInstance();
+-keep class com.xiaomi.smarthome.authlib.IAuthMangerImpl{
+       public abstract boolean init(android.content.Context);
+       public abstract boolean callAuth(android.content.Context, android.os.Bundle,int,com.xiaomi.smarthome.authlib.IAuthResponse);
+       public static com.xiaomi.smarthome.authlib.IAuthMangerImpl getInstance();
+       public abstract void release();
 }
 -keep class  com.xiaomi.smarthome.authlib.AuthCode{*;}
 -keep class  com.xiaomi.smarthome.authlib.AuthConstants{*;}
