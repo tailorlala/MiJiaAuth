@@ -34,7 +34,8 @@ public class AuthCode {<br>
     public static final int APP_ID_ERROR = -104;//appid有问题<br>
     public static final int APP_SIGN_ERROR = -105;//签名错误<br>
 
-    public static final int REQUEST_CODE_CALL_AUTH = 1;<br>
+    public static final int REQUEST_CODE_CALL_AUTH_FOR_APP = 1;//给应用授权<br>
+    public static final int REQUEST_CODE_CALL_AUTH_FOR_DEVICE = 2;//给设备授权<br>
 }<br>
 而返回的data中，主要有下面四个值，注意判空使用<br>
  /**返回值*****/<br>
