@@ -39,7 +39,7 @@ public class AuthActivity extends AppCompatActivity {
                                              Bundle bundle = new Bundle();
                                              bundle.putString(AuthConstants.EXTRA_APPLICATION_ID, "44212592383956891");
                                              //发起授权
-                                             IAuthMangerImpl.getInstance().callAuth(AuthActivity.this, bundle, AuthCode.REQUEST_CODE_CALL_AUTH, new IAuthResponse() {
+                                             IAuthMangerImpl.getInstance().callAuth(AuthActivity.this, bundle, AuthCode.REQUEST_CODE_CALL_AUTH_FOR_APP, new IAuthResponse() {
                                                          @Override
                                                          public void onSuccess(int i, final Bundle bundle) {
                                                              if (bundle != null) {
