@@ -16,6 +16,10 @@ import android.os.RemoteException;
 import android.util.Log;
 import android.widget.Toast;
 
+import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -25,7 +29,7 @@ import java.util.concurrent.Executors;
  * Email renlei@xiaomi.com
  */
 
-public class AuthManager extends IAuthMangerImpl{
+public class AuthManager extends IAuthMangerImpl {
     private static final String TAG = "AuthManager";
     private static final String PACKAGE_NAME = "com.xiaomi.smarthome";
     private static final String SERVICE_NAME = "com.xiaomi.smarthome.auth.AuthService";
@@ -90,6 +94,7 @@ public class AuthManager extends IAuthMangerImpl{
         mHandler = new Handler(Looper.getMainLooper());
         return initService();
     }
+
     @Override
     public boolean callAuth(final Context context, final Bundle data, final int requestCode, IAuthResponse response) {
         this.mContext = context;
@@ -187,12 +192,45 @@ public class AuthManager extends IAuthMangerImpl{
             }
             /************** 得到应用签名 **************/
 //            Log.d("AuthManager", "应用的签名" + builder.toString());
-            return builder.toString();
+//            Log.d("AuthManager", "应用的签名md5" + getMD5(builder.toString()));
+            return getMD5(builder.toString());
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
         return "";
     }
+    /*public String EncoderByMd5(String str) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+        //确定计算方法
+        MessageDigest md5= MessageDigest.getInstance("MD5");
+        BASE64Encoder base64en = new BASE64Encoder();
+        //加密后的字符串
+        String newstr=base64en.encode(md5.digest(str.getBytes("utf-8")));
+        return newstr;
+    }*/
+
+    /***
+     * MD5加码 生成32位md5码
+     */
+    private String getMD5(String str) {
+        try {
+            // 生成一个MD5加密计算摘要
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            // 计算md5函数
+            md.update(str.getBytes());
+            // digest()最后确定返回md5 hash值，返回值为8为字符串。因为md5 hash值是16位的hex值，实际上就是8位的字符
+            // BigInteger函数则将8位的字符串转换成16位hex值，用字符串来表示；得到字符串形式的hash值
+            String md5 = new BigInteger(1, md.digest()).toString(16);
+            //BigInteger会把0省略掉，需补全至32位
+            return fillMD5(md5);
+        } catch (Exception e) {
+            throw new RuntimeException("MD5加密错误:" + e.getMessage(), e);
+        }
+    }
+
+    private String fillMD5(String md5) {
+        return md5.length() == 32 ? md5 : fillMD5("0" + md5);
+    }
+
     @Override
     public void release() {
         if (bindSuccess && connection != null && mContext != null) {
