@@ -160,21 +160,6 @@ public class AuthManager extends IAuthMangerImpl {
         }
     };
 
-    public boolean callAuthnewold(Activity context, Bundle data, int requestCode) {
-        this.mContext = context;
-        Intent intent = new Intent();
-        intent.setAction("com.xiaomi.smarthome.action.auth");
-        intent.putExtra(AuthConstants.EXTRA_APPLICATION_ID, "44212592383956891");
-        intent.putExtra(AuthConstants.EXTRA_APP_SIGN, getAppSignature());
-        intent.putExtra(AuthConstants.EXTRA_PACKAGE_NAME, context.getPackageName());
-        if (intent.resolveActivity(context.getPackageManager()) == null) {
-            // 说明系统中不存在这个activity
-            Toast.makeText(mContext, "其确认已经安装了米家App", Toast.LENGTH_SHORT).show();
-            return false;
-        }
-        context.startActivityForResult(intent, requestCode);
-        return true;
-    }
 
     private String getAppSignature() {
 
@@ -193,20 +178,13 @@ public class AuthManager extends IAuthMangerImpl {
             /************** 得到应用签名 **************/
 //            Log.d("AuthManager", "应用的签名" + builder.toString());
 //            Log.d("AuthManager", "应用的签名md5" + getMD5(builder.toString()));
-            return getMD5(builder.toString());
+            return getMD5(builder.toString()).toUpperCase();
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
         return "";
     }
-    /*public String EncoderByMd5(String str) throws NoSuchAlgorithmException, UnsupportedEncodingException {
-        //确定计算方法
-        MessageDigest md5= MessageDigest.getInstance("MD5");
-        BASE64Encoder base64en = new BASE64Encoder();
-        //加密后的字符串
-        String newstr=base64en.encode(md5.digest(str.getBytes("utf-8")));
-        return newstr;
-    }*/
+
 
     /***
      * MD5加码 生成32位md5码
