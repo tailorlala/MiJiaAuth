@@ -11,6 +11,7 @@ public class AuthConstants {
     public static final String EXTRA_APPLICATION_ID = "extra_application_id";
     public static final String EXTRA_PACKAGE_NAME = "extra_package_name";
     public static final String EXTRA_APP_SIGN = "extra_app_sign";
+    public static final String EXTRA_DEVICE_DID = "device_id";
     public static final int ACTIVITY_RESULT_FAIL = -2;
 
     /**返回值*****/

@@ -16,8 +16,8 @@ import com.xiaomi.smarthome.authlib.IAuthMangerImpl;
 import com.xiaomi.smarthome.authlib.IAuthResponse;
 
 public class AuthActivity extends AppCompatActivity {
-    Button mAuthBtn;
-    Button mAuthBtn2;
+    Button mAuthDeviceBtn;
+    Button mAuthAppBtn;
     TextView mResult;
     ImageView mAppIcon;
 
@@ -25,52 +25,62 @@ public class AuthActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_auth);
-        mAuthBtn = (Button) findViewById(R.id.go_auth);
-        mAuthBtn2 = (Button) findViewById(R.id.go_auth2);
+        mAuthDeviceBtn = (Button) findViewById(R.id.go_auth);
+        mAuthAppBtn = (Button) findViewById(R.id.go_auth2);
         mResult = (TextView) findViewById(R.id.result);
         mAppIcon = (ImageView) findViewById(R.id.app_icon);
 
-        mAuthBtn.setVisibility(View.GONE);
         IAuthMangerImpl.getInstance().init(AuthActivity.this);///初始化
-
-        mAuthBtn2.setOnClickListener(new View.OnClickListener() {
+        mAuthDeviceBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onAuthClick(AuthCode.REQUEST_CODE_CALL_AUTH_FOR_DEVICE);
+            }
+        });
+        mAuthAppBtn.setOnClickListener(new View.OnClickListener() {
                                          @Override
                                          public void onClick(View v) {
-                                             Bundle bundle = new Bundle();
-                                             bundle.putString(AuthConstants.EXTRA_APPLICATION_ID, "98764943774501804");
-                                             //发起授权
-                                             IAuthMangerImpl.getInstance().callAuth(AuthActivity.this, bundle, AuthCode.REQUEST_CODE_CALL_AUTH_FOR_APP, new IAuthResponse() {
-                                                         @Override
-                                                         public void onSuccess(int i, final Bundle bundle) {
-                                                             if (bundle != null) {
-                                                                         StringBuilder sb = new StringBuilder();
-                                                                         sb.append("结果：").append("\n")
-                                                                                 .append("resultCode：").append(bundle.getInt(AuthConstants.EXTRA_RESULT_CODE, -1)).append("\n")
-                                                                                 .append("resultMsg：").append(bundle.getString(AuthConstants.EXTRA_RESULT_MSG, "")).append("\n")
-                                                                                 .append("token：").append(bundle.getString(AuthConstants.EXTRA_TOKEN, "")).append("\n")
-                                                                                 .append("user_id").append(bundle.getString(AuthConstants.EXTRA_USER_ID));
-
-                                                                         mResult.setText(sb);
-                                                             }
-                                                         }
-
-                                                         @Override
-                                                         public void onFail(int i, Bundle bundle) {
-                                                             StringBuilder sb = new StringBuilder();
-                                                             sb.append("结果：").append("\n")
-                                                                     .append("resultCode：").append(bundle.getInt(AuthConstants.EXTRA_RESULT_CODE, -1)).append("\n")
-                                                                     .append("resultMsg：").append(bundle.getString(AuthConstants.EXTRA_RESULT_MSG, "")).append("\n")
-                                                                     .append("token：").append(bundle.getString(AuthConstants.EXTRA_TOKEN, "")).append("\n")
-                                                                     .append("user_id").append(bundle.getString(AuthConstants.EXTRA_USER_ID));
-                                                             mResult.setText(sb);
-                                                         }
-                                                     }
-                                             );
+                                             onAuthClick(AuthCode.REQUEST_CODE_CALL_AUTH_FOR_APP);
                                          }
                                      }
         );
     }
 
+    private void onAuthClick(int requestCode){
+        Bundle bundle = new Bundle();
+        bundle.putString(AuthConstants.EXTRA_APPLICATION_ID, "9971080915123888");
+        if (requestCode == AuthCode.REQUEST_CODE_CALL_AUTH_FOR_DEVICE){
+            bundle.putString(AuthConstants.EXTRA_DEVICE_DID,"58067337");
+        }
+        //发起授权
+        IAuthMangerImpl.getInstance().callAuth(AuthActivity.this, bundle, requestCode, new IAuthResponse() {
+                    @Override
+                    public void onSuccess(int i, final Bundle bundle) {
+                        if (bundle != null) {
+                            StringBuilder sb = new StringBuilder();
+                            sb.append("结果：").append("\n")
+                                    .append("resultCode：").append(bundle.getInt(AuthConstants.EXTRA_RESULT_CODE, -1)).append("\n")
+                                    .append("resultMsg：").append(bundle.getString(AuthConstants.EXTRA_RESULT_MSG, "")).append("\n")
+                                    .append("token：").append(bundle.getString(AuthConstants.EXTRA_TOKEN, "")).append("\n")
+                                    .append("user_id").append(bundle.getString(AuthConstants.EXTRA_USER_ID));
+
+                            mResult.setText(sb);
+                        }
+                    }
+
+                    @Override
+                    public void onFail(int i, Bundle bundle) {
+                        StringBuilder sb = new StringBuilder();
+                        sb.append("结果：").append("\n")
+                                .append("resultCode：").append(bundle.getInt(AuthConstants.EXTRA_RESULT_CODE, -1)).append("\n")
+                                .append("resultMsg：").append(bundle.getString(AuthConstants.EXTRA_RESULT_MSG, "")).append("\n")
+                                .append("token：").append(bundle.getString(AuthConstants.EXTRA_TOKEN, "")).append("\n")
+                                .append("user_id").append(bundle.getString(AuthConstants.EXTRA_USER_ID));
+                        mResult.setText(sb);
+                    }
+                }
+        );
+    }
 
     @Override
     protected void onDestroy() {

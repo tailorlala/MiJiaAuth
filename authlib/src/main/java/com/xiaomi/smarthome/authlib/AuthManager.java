@@ -177,8 +177,12 @@ public class AuthManager extends IAuthMangerImpl {
             }
             /************** 得到应用签名 **************/
 //            Log.d("AuthManager", "应用的签名" + builder.toString());
+//            AuthLog.log("签名"+signatures[0].toCharsString());
+//            AuthLog.log("签名---"+ getMD5(signatures[0].toCharsString()));
+//            AuthLog.log("签名11---"+ encryptionMD5(signatures[0].toByteArray()));
 //            Log.d("AuthManager", "应用的签名md5" + getMD5(builder.toString()));
-            return getMD5(builder.toString()).toUpperCase();
+//            return encryptionMD5(signatures[0].toByteArray());
+            return encryptionMD5(signatures[0].toByteArray()).toUpperCase();
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
@@ -209,6 +213,27 @@ public class AuthManager extends IAuthMangerImpl {
         return md5.length() == 32 ? md5 : fillMD5("0" + md5);
     }
 
+
+    public static String encryptionMD5(byte[] byteStr) {
+        MessageDigest messageDigest = null;
+        StringBuffer md5StrBuff = new StringBuffer();
+        try {
+            messageDigest = MessageDigest.getInstance("MD5");
+            messageDigest.reset();
+            messageDigest.update(byteStr);
+            byte[] byteArray = messageDigest.digest();
+            for (int i = 0; i < byteArray.length; i++) {
+                if (Integer.toHexString(0xFF & byteArray[i]).length() == 1) {
+                    md5StrBuff.append("0").append(Integer.toHexString(0xFF & byteArray[i]));
+                } else {
+                    md5StrBuff.append(Integer.toHexString(0xFF & byteArray[i]));
+                }
+            }
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        return md5StrBuff.toString();
+    }
     @Override
     public void release() {
         if (bindSuccess && connection != null && mContext != null) {

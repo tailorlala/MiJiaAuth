@@ -8,18 +8,17 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.example.renlei.mainc.AuthActivity"
     android:orientation="vertical">
     <Button
         android:id="@+id/go_auth"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="跳转"/>
+        android:text="去设备授权"/>
     <Button
         android:id="@+id/go_auth2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="去授权"/>
+        android:text="去App授权"/>
     <TextView
         android:id="@+id/result"
         android:layout_width="match_parent"

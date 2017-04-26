@@ -16,6 +16,8 @@ public class AuthCode {
     public static final int APP_SIGN_ERROR = -105;//签名错误
     public static final int AUTH_CANCEL = -106;///取消授权
     public static final int REQUEST_AUTH_ERROR = -107;//请求授权失败
+    public static final int REQUEST_CODE_ERROR = -108;//请求的code错误
+    public static final int REQUSET_DID_ERROR = -109;///缺少did
 
     public static final int REQUEST_CODE_CALL_AUTH_FOR_APP = 1;
     public static final int REQUEST_CODE_CALL_AUTH_FOR_DEVICE = 2;
