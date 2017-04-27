@@ -25,12 +25,13 @@ IAuthMangerImpl.getInstance().init(AuthActivity.this);///初始化
  如果是app授权的话，只需要传入AuthConstants.EXTRA_APPLICATION_ID，一个参数即可，该参数需要到开放平台申请。<br>
  如果设备授权的话，你还需要传入设备的idAuthConstants.EXTRA_DEVICE_DID。<br>
  例如<br>
+ 
  <pre><code>
-        Bundle bundle = new Bundle();
-        bundle.putString(AuthConstants.EXTRA_APPLICATION_ID, "9971080915123888");
-        if (requestCode == AuthCode.REQUEST_CODE_CALL_AUTH_FOR_DEVICE){
-            bundle.putString(AuthConstants.EXTRA_DEVICE_DID,"58067337");
-        }
+   Bundle bundle = new Bundle();
+   bundle.putString(AuthConstants.EXTRA_APPLICATION_ID, "app_id");
+   if (requestCode == AuthCode.REQUEST_CODE_CALL_AUTH_FOR_DEVICE){
+        bundle.putString(AuthConstants.EXTRA_DEVICE_DID,"device_id");    
+        }               
  </pre></code>
  
 
