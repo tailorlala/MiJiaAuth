@@ -19,6 +19,6 @@ public class AuthCode {
     public static final int REQUEST_CODE_ERROR = -108;//请求的code错误
     public static final int REQUSET_DID_ERROR = -109;///缺少did
 
-    public static final int REQUEST_CODE_CALL_AUTH_FOR_APP = 1;
-    public static final int REQUEST_CODE_CALL_AUTH_FOR_DEVICE = 2;
+    public static final int REQUEST_CODE_CALL_AUTH_FOR_APP = 1;//请求app授权
+    public static final int REQUEST_CODE_CALL_AUTH_FOR_DEVICE = 2;//请求设备授权
 }
