@@ -53,12 +53,12 @@ public class AuthActivity extends AppCompatActivity {
 
     private void onAuthClick(int requestCode){
         Bundle bundle = new Bundle();
-        if (TextUtils.isEmpty(mAppIdET.getText().toString())){
+        /*if (TextUtils.isEmpty(mAppIdET.getText().toString())){
             Toast.makeText(AuthActivity.this,"extra_application_id 不可以为空",Toast.LENGTH_SHORT);
             return;
-        }
-//        bundle.putString(AuthConstants.EXTRA_APPLICATION_ID, "9971080915123888");
-        bundle.putString(AuthConstants.EXTRA_APPLICATION_ID, mAppIdET.getText().toString());
+        }*/
+        bundle.putString(AuthConstants.EXTRA_APPLICATION_ID, "9971080915123888");
+//        bundle.putString(AuthConstants.EXTRA_APPLICATION_ID, mAppIdET.getText().toString());
         if (requestCode == AuthCode.REQUEST_CODE_CALL_AUTH_FOR_DEVICE){
             if (TextUtils.isEmpty(mDeviceET.getText().toString())){
                 Toast.makeText(AuthActivity.this,"device_id 不可以为空",Toast.LENGTH_SHORT);

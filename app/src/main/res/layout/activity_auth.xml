@@ -13,7 +13,8 @@
         android:id="@+id/app_id"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="extra_application_id"/>
+        android:hint="extra_application_id"
+        android:visibility="gone"/>
     <EditText
         android:id="@+id/device"
         android:layout_width="match_parent"
@@ -29,7 +30,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="去App授权"
-        android:visibility="gone"/>
+        android:visibility="gone"
+        />
     <TextView
         android:id="@+id/result"
         android:layout_width="match_parent"
