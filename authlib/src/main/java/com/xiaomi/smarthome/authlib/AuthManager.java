@@ -68,9 +68,9 @@ public class AuthManager extends IAuthMangerImpl {
         intent.setComponent(componentName);
         bindSuccess = mContext.bindService(intent, connection, Context.BIND_AUTO_CREATE);
         Log.d(TAG, "bindResult" + bindSuccess);
-        if (!bindSuccess) {
-            Toast.makeText(mContext, R.string.bind_failed_msg, Toast.LENGTH_SHORT).show();
-        }
+        /*if (!bindSuccess) {
+            Toast.makeText(mContext, "请确认已经安装了米家，并且更新到最新的版本", Toast.LENGTH_SHORT).show();
+        }*/
         return bindSuccess;
     }
 
@@ -103,7 +103,7 @@ public class AuthManager extends IAuthMangerImpl {
             initAuth(context);
         }
         if (!bindSuccess) {
-            Toast.makeText(mContext, R.string.bind_failed_msg, Toast.LENGTH_SHORT).show();
+//            Toast.makeText(mContext, "请确认已经安装了米家，并且更新到最新的版本", Toast.LENGTH_SHORT).show();
             return false;
         }
         mAuthResponse = response;

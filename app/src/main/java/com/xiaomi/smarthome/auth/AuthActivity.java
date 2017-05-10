@@ -35,7 +35,10 @@ public class AuthActivity extends AppCompatActivity {
         mAppIcon = (ImageView) findViewById(R.id.app_icon);
         mAppIdET = (EditText) findViewById(R.id.app_id);
         mDeviceET = (EditText) findViewById(R.id.device);
-        IAuthMangerImpl.getInstance().init(AuthActivity.this);///初始化
+        boolean isSuccess =  IAuthMangerImpl.getInstance().init(AuthActivity.this);///初始化
+        if (!isSuccess){
+            Toast.makeText(AuthActivity.this, "请确认已经安装了米家，并且更新到最新的版本啦", Toast.LENGTH_SHORT).show();
+        }
         mAuthDeviceBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -68,7 +71,7 @@ public class AuthActivity extends AppCompatActivity {
             bundle.putString(AuthConstants.EXTRA_DEVICE_DID,mDeviceET.getText().toString());
         }
         //发起授权
-        IAuthMangerImpl.getInstance().callAuth(AuthActivity.this, bundle, requestCode, new IAuthResponse() {
+        boolean isSuccess = IAuthMangerImpl.getInstance().callAuth(AuthActivity.this, bundle, requestCode, new IAuthResponse() {
                     @Override
                     public void onSuccess(int i, final Bundle bundle) {
                         if (bundle != null) {
@@ -95,6 +98,9 @@ public class AuthActivity extends AppCompatActivity {
                     }
                 }
         );
+        if (!isSuccess){
+            Toast.makeText(AuthActivity.this, "请确认已经安装了米家，并且更新到最新的版本啦.", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
