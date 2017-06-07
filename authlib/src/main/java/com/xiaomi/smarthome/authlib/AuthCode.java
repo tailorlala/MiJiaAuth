@@ -20,7 +20,8 @@ public class AuthCode {
     public static final int REQUSET_DID_ERROR = -109;///缺少did
     public static final int REQUEST_AUTH_NO_CAPABILITY = -110;///该设备不支持语音授权，或者该设备不属于你的名下
     public static final int REQUEST_AUTH_NO_PERMISSION = -111;///该账号不支持该类型授权，请到开放平台申请
-
+    public static final int REQUEST_MISS_PARAMS = -112;
+    public static final int REQUEST_BIND_ERROR = -113;
 
     public static final int REQUEST_CODE_CALL_AUTH_FOR_APP = 4;//给应用授权
     public static final int REQUEST_CODE_CALL_AUTH_FOR_DEVICE = 2;//给设备授权
