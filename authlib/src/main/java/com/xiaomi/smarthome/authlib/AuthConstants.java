@@ -14,10 +14,15 @@ public class AuthConstants {
     public static final String EXTRA_DEVICE_DID = "device_id";
     public static final String EXTRA_DEVICE_TOKEN = "device_token";
     public static final int ACTIVITY_RESULT_FAIL = -2;
+    public static final String EXTRA_SDK_VERSION_CODE ="sdk_version_code";
+    public static final String EXTRA_SDK_VERSION_NAME = "sdk_version_name";
+    public static final String EXTRA_DEVICE_TOKEN_TIMESTAMP = "token_timestamp";
+    public static final String EXTRA_DEVICE_SN = "device_sn";
 
     /**返回值*****/
     public static final String EXTRA_TOKEN = "extra_token";
     public static final String EXTRA_RESULT_CODE = "extra_result_code";
     public static final String EXTRA_RESULT_MSG = "extra_result_msg";
     public static final String EXTRA_USER_ID = "extra_user_id";
+    public static final String EXTRA_VERSION_INFO = "extra_version_info";
 }

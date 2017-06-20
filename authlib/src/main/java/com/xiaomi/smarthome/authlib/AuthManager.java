@@ -118,6 +118,8 @@ public class AuthManager extends IAuthMangerImpl {
                 }
                 bundle.putString(AuthConstants.EXTRA_APP_SIGN, getAppSignature());
                 bundle.putString(AuthConstants.EXTRA_PACKAGE_NAME, context.getPackageName());
+                bundle.putInt(AuthConstants.EXTRA_SDK_VERSION_CODE,BuildConfig.VERSION_CODE);
+                bundle.putString(AuthConstants.EXTRA_SDK_VERSION_NAME,BuildConfig.VERSION_NAME);
                 try {
                     mCallAuth.callAuth(requestCode, bundle, mCallBack);
                 } catch (RemoteException e) {

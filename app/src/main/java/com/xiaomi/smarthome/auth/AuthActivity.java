@@ -80,7 +80,8 @@ public class AuthActivity extends AppCompatActivity {
                                     .append("resultCode：").append(bundle.getInt(AuthConstants.EXTRA_RESULT_CODE, -1)).append("\n")
                                     .append("resultMsg：").append(bundle.getString(AuthConstants.EXTRA_RESULT_MSG, "")).append("\n")
                                     .append("token：").append(bundle.getString(AuthConstants.EXTRA_TOKEN, "")).append("\n")
-                                    .append("user_id").append(bundle.getString(AuthConstants.EXTRA_USER_ID));
+                                    .append("user_id").append(bundle.getString(AuthConstants.EXTRA_USER_ID)).append("\n")
+                                    .append("versionInfo:").append(bundle.getString(AuthConstants.EXTRA_VERSION_INFO));
 
                             mResult.setText(sb);
                         }

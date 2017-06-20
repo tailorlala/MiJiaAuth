@@ -22,6 +22,7 @@ public class AuthCode {
     public static final int REQUEST_AUTH_NO_PERMISSION = -111;///该账号不支持该类型授权，请到开放平台申请
     public static final int REQUEST_MISS_PARAMS = -112;
     public static final int REQUEST_BIND_ERROR = -113;
+    public static final int REQUEST_API_LEVEL_ERR = -114;///版本号不匹配
 
     public static final int REQUEST_CODE_CALL_AUTH_FOR_APP = 4;//给应用授权
     public static final int REQUEST_CODE_CALL_AUTH_FOR_DEVICE = 2;//给设备授权
