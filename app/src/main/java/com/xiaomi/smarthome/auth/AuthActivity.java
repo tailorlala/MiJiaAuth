@@ -1,5 +1,6 @@
 package com.xiaomi.smarthome.auth;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -17,14 +18,16 @@ import com.xiaomi.smarthome.authlib.AuthCode;
 import com.xiaomi.smarthome.authlib.AuthConstants;
 import com.xiaomi.smarthome.authlib.IAuthMangerImpl;
 import com.xiaomi.smarthome.authlib.IAuthResponse;
+import com.xiaomi.smarthome.authlib.IInitCallBack;
 
-public class AuthActivity extends AppCompatActivity {
+public class AuthActivity extends Activity {
     Button mAuthDeviceBtn;
     Button mAuthAppBtn;
     TextView mResult;
     ImageView mAppIcon;
     EditText mAppIdET;
     EditText mDeviceET;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,26 +38,38 @@ public class AuthActivity extends AppCompatActivity {
         mAppIcon = (ImageView) findViewById(R.id.app_icon);
         mAppIdET = (EditText) findViewById(R.id.app_id);
         mDeviceET = (EditText) findViewById(R.id.device);
-        boolean isSuccess =  IAuthMangerImpl.getInstance().init(AuthActivity.this);///初始化
-        if (!isSuccess){
+        /*int isResult =  IAuthMangerImpl.getInstance().init(AuthActivity.this);///初始化
+        if (isResult != 0){
             Toast.makeText(AuthActivity.this, "请确认已经安装了米家，并且更新到最新的版本啦", Toast.LENGTH_SHORT).show();
-        }
+        }*/
+
         mAuthDeviceBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onAuthClick(AuthCode.REQUEST_CODE_CALL_AUTH_FOR_DEVICE);
+                //IAuthMangerImpl
+                if (IAuthMangerImpl.getInstance().getSdkApiLevel() >= 4) {
+                    IAuthMangerImpl.getInstance().intiWithCallBack(AuthActivity.this, new IInitCallBack() {
+                        @Override
+                        public void onServiceConnected(int result) {
+//                        Toast.makeText(AuthActivity.this, "已经初始化完毕啦", Toast.LENGTH_SHORT).show();
+                            Log.d("AuthActivity","IAuthMangerImpl.getInstance().getSdkApiLevel()" + IAuthMangerImpl.getInstance().getSdkApiLevel());
+                            onAuthClick(AuthCode.REQUEST_CODE_CALL_AUTH_FOR_DEVICE);
+                        }
+
+                    });
+                }
             }
         });
         mAuthAppBtn.setOnClickListener(new View.OnClickListener() {
-                                         @Override
-                                         public void onClick(View v) {
-                                             onAuthClick(AuthCode.REQUEST_CODE_CALL_AUTH_FOR_APP);
-                                         }
-                                     }
+                                           @Override
+                                           public void onClick(View v) {
+                                               onAuthClick(AuthCode.REQUEST_CODE_CALL_AUTH_FOR_APP);
+                                           }
+                                       }
         );
     }
 
-    private void onAuthClick(int requestCode){
+    private void onAuthClick(int requestCode) {
         Bundle bundle = new Bundle();
         /*if (TextUtils.isEmpty(mAppIdET.getText().toString())){
             Toast.makeText(AuthActivity.this,"extra_application_id 不可以为空",Toast.LENGTH_SHORT);
@@ -62,13 +77,13 @@ public class AuthActivity extends AppCompatActivity {
         }*/
         bundle.putString(AuthConstants.EXTRA_APPLICATION_ID, "9971080915123888");
 //        bundle.putString(AuthConstants.EXTRA_APPLICATION_ID, mAppIdET.getText().toString());
-        if (requestCode == AuthCode.REQUEST_CODE_CALL_AUTH_FOR_DEVICE){
-            if (TextUtils.isEmpty(mDeviceET.getText().toString())){
-                Toast.makeText(AuthActivity.this,"device_id 不可以为空",Toast.LENGTH_SHORT);
+        if (requestCode == AuthCode.REQUEST_CODE_CALL_AUTH_FOR_DEVICE) {
+            if (TextUtils.isEmpty(mDeviceET.getText().toString())) {
+                Toast.makeText(AuthActivity.this, "device_id 不可以为空", Toast.LENGTH_SHORT);
                 return;
             }
 //            bundle.putString(AuthConstants.EXTRA_DEVICE_DID,"58067337");
-            bundle.putString(AuthConstants.EXTRA_DEVICE_DID,mDeviceET.getText().toString());
+            bundle.putString(AuthConstants.EXTRA_DEVICE_DID, mDeviceET.getText().toString());
         }
         //发起授权
         boolean isSuccess = IAuthMangerImpl.getInstance().callAuth(AuthActivity.this, bundle, requestCode, new IAuthResponse() {
@@ -99,7 +114,7 @@ public class AuthActivity extends AppCompatActivity {
                     }
                 }
         );
-        if (!isSuccess){
+        if (!isSuccess) {
             Toast.makeText(AuthActivity.this, "请确认已经安装了米家，并且更新到最新的版本啦.", Toast.LENGTH_SHORT).show();
         }
     }

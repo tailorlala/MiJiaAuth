@@ -35,7 +35,14 @@ public abstract class IAuthMangerImpl {
     }*/
     public abstract void release();
     public abstract boolean callAuth(final Context context, final Bundle data, final int requestCode, IAuthResponse response);
-    public abstract boolean init(Context context);
+
+    /**
+     * 给有activity等生命周期时的使用
+     * apilevel 4
+     * @param context
+     * @return
+     */
+    public abstract int init(Context context);
     public static IAuthMangerImpl getInstance(){
         if (INSTANCE == null) {
             synchronized (IAuthMangerImpl.class) {
@@ -44,4 +51,13 @@ public abstract class IAuthMangerImpl {
         }
         return INSTANCE;
     };
+
+    /**
+     * 给没有生命周期的初始化，像RN等
+     * @apilevel  5
+     * @param context
+     * @param callBack
+     */
+    public abstract void intiWithCallBack(Context context,IInitCallBack callBack);
+    public abstract int getSdkApiLevel();
 }

@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.content.pm.Signature;
 import android.os.Bundle;
 import android.os.Handler;
@@ -23,6 +24,8 @@ import java.security.NoSuchAlgorithmException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import static android.content.Context.BIND_AUTO_CREATE;
+
 /**
  * Time 2017/4/13.
  * User renlei
@@ -33,6 +36,7 @@ public class AuthManager extends IAuthMangerImpl {
     private static final String TAG = "AuthManager";
     private static final String PACKAGE_NAME = "com.xiaomi.smarthome";
     private static final String SERVICE_NAME = "com.xiaomi.smarthome.auth.AuthService";
+    private static final String ACTION = "com.xiaomi.smarthome.action.AuthService";
     Context mContext;
     private static volatile AuthManager INSTANCE;
     private IAuthResponse mAuthResponse;
@@ -41,6 +45,7 @@ public class AuthManager extends IAuthMangerImpl {
     private boolean bindSuccess = false;
     private Handler mHandler;
     ExecutorService mExecutor = Executors.newFixedThreadPool(1);
+    private IInitCallBack mInitCallBack;
 
     public AuthManager() {
         mHandler = new Handler(Looper.getMainLooper());
@@ -56,23 +61,64 @@ public class AuthManager extends IAuthMangerImpl {
     }
 
     @Override
-    public boolean init(Context context) {
+    public int init(Context context) {
         this.mContext = context;
         mHandler = new Handler(Looper.getMainLooper());
         return initService();
     }
 
-    private boolean initService() {
+    private int initService() {
+        Intent intent = new Intent();
+        intent.setAction(ACTION);
+        intent.addCategory(Intent.CATEGORY_DEFAULT);
+        PackageManager packageManager = mContext.getApplicationContext().getPackageManager();
+        ResolveInfo info = packageManager.resolveService(intent, 0);
+        int bindResult;
+        if (info != null) {
+            String packageName = info.serviceInfo.packageName;
+            String serviceName = info.serviceInfo.name;
+            ComponentName componentName = new ComponentName(packageName, serviceName);
+            AuthLog.log("packageName：" + packageName + "   serviceName:" + serviceName);
+            intent.setComponent(componentName);
+            AuthLog.log("getComponentEnabledSetting:" + packageManager.getComponentEnabledSetting(componentName));
+            bindSuccess = mContext.getApplicationContext().bindService(intent, connection, BIND_AUTO_CREATE);
+            if (bindSuccess) {
+                bindResult = 0;
+            } else {
+                bindResult = -1;
+                if (mInitCallBack != null) {
+                    mInitCallBack.onServiceConnected(bindResult);
+                }
+            }
+        } else {
+            Intent intent2 = new Intent();
+            ComponentName componentName = new ComponentName(PACKAGE_NAME, SERVICE_NAME);
+            intent2.setComponent(componentName);
+            bindSuccess = mContext.getApplicationContext().bindService(intent2, connection, Context.BIND_AUTO_CREATE);
+            Log.d(TAG, "bindResult" + bindSuccess);
+            if (bindSuccess) {
+                bindResult = 0;
+            } else {
+                bindResult = -2;
+            }
+        }
+        AuthLog.log("bindResult" + bindResult);
+        if (bindSuccess && isServiceConn && mInitCallBack != null) {
+            mInitCallBack.onServiceConnected(bindResult);
+        }
+        return bindResult;
+    }
+    /*private boolean initService() {
         Intent intent = new Intent();
         ComponentName componentName = new ComponentName(PACKAGE_NAME, SERVICE_NAME);
         intent.setComponent(componentName);
         bindSuccess = mContext.bindService(intent, connection, Context.BIND_AUTO_CREATE);
         Log.d(TAG, "bindResult" + bindSuccess);
-        /*if (!bindSuccess) {
+        *//*if (!bindSuccess) {
             Toast.makeText(mContext, "请确认已经安装了米家，并且更新到最新的版本", Toast.LENGTH_SHORT).show();
-        }*/
+        }*//*
         return bindSuccess;
-    }
+    }*/
 
     ServiceConnection connection = new ServiceConnection() {
         @Override
@@ -80,16 +126,23 @@ public class AuthManager extends IAuthMangerImpl {
             AuthLog.log("onServiceConnected");
             mCallAuth = ICallAuth.Stub.asInterface(service);
             isServiceConn = true;
+            if (mInitCallBack != null) {
+                mInitCallBack.onServiceConnected(0);
+            }
         }
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
             AuthLog.log("onServiceDisconnected");
             isServiceConn = false;
+            mCallAuth = null;
+            if (mInitCallBack != null) {
+                mInitCallBack.onServiceDisConnected();
+            }
         }
     };
 
-    public boolean initAuth(Context context) {
+    private int initAuth(Context context) {
         this.mContext = context;
         mHandler = new Handler(Looper.getMainLooper());
         return initService();
@@ -118,8 +171,8 @@ public class AuthManager extends IAuthMangerImpl {
                 }
                 bundle.putString(AuthConstants.EXTRA_APP_SIGN, getAppSignature());
                 bundle.putString(AuthConstants.EXTRA_PACKAGE_NAME, context.getPackageName());
-                bundle.putInt(AuthConstants.EXTRA_SDK_VERSION_CODE,BuildConfig.VERSION_CODE);
-                bundle.putString(AuthConstants.EXTRA_SDK_VERSION_NAME,BuildConfig.VERSION_NAME);
+                bundle.putInt(AuthConstants.EXTRA_SDK_VERSION_CODE, BuildConfig.VERSION_CODE);
+                bundle.putString(AuthConstants.EXTRA_SDK_VERSION_NAME, BuildConfig.VERSION_NAME);
                 try {
                     mCallAuth.callAuth(requestCode, bundle, mCallBack);
                 } catch (RemoteException e) {
@@ -236,11 +289,29 @@ public class AuthManager extends IAuthMangerImpl {
         }
         return md5StrBuff.toString();
     }
+
     @Override
     public void release() {
-        if (bindSuccess && connection != null && mContext != null) {
-            mContext.unbindService(connection);
+        try {
+            AuthLog.log("isServiceConn" + isServiceConn);
+            if (bindSuccess && connection != null && mContext != null && isServiceConn) {
+                mContext.getApplicationContext().unbindService(connection);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
+    @Override
+    public void intiWithCallBack(Context context, IInitCallBack callBack) {
+        this.mContext = context;
+        this.mInitCallBack = callBack;
+        mHandler = new Handler(Looper.getMainLooper());
+        initService();
+    }
+
+    @Override
+    public int getSdkApiLevel() {
+        return BuildConfig.VERSION_CODE;
+    }
 }

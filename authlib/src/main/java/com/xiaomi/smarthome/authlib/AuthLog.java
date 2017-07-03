@@ -16,7 +16,7 @@ public class AuthLog {
             return;
         }
         if (ENABLE_LOG){
-            Log.d("AuthLog",text);
+            Log.e("AuthLog",text);
         }
     }
 }

@@ -25,11 +25,14 @@
 -optimizations !code/simplification/arithmetic,!field/*,!class/merging/*
 
 -keep class com.xiaomi.smarthome.authlib.IAuthMangerImpl{
-       public abstract boolean init(android.content.Context);
-       public abstract boolean callAuth(android.content.Context, android.os.Bundle,int,com.xiaomi.smarthome.authlib.IAuthResponse);
-       public static com.xiaomi.smarthome.authlib.IAuthMangerImpl getInstance();
-       public abstract void release();
+        *;
+       #public abstract boolean init(android.content.Context);
+       #public abstract boolean callAuth(android.content.Context, android.os.Bundle,int,com.xiaomi.smarthome.authlib.IAuthResponse);
+       #public static com.xiaomi.smarthome.authlib.IAuthMangerImpl getInstance();
+       #public abstract void release();
+       #public abstract void intiWithCallBack(android.content.Context,com.xiaomi.smarthome.authlib.IInitCallBack);
 }
 -keep class  com.xiaomi.smarthome.authlib.AuthCode{*;}
 -keep class  com.xiaomi.smarthome.authlib.AuthConstants{*;}
 -keep interface  com.xiaomi.smarthome.authlib.IAuthResponse{*;}
+-keep class com.xiaomi.smarthome.authlib.IInitCallBack{*;}
