@@ -1,6 +1,5 @@
 package com.xiaomi.smarthome.authlib;
 
-import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -17,7 +16,6 @@ import android.os.RemoteException;
 import android.util.Log;
 import android.widget.Toast;
 
-import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -46,7 +44,7 @@ public class AuthManager extends IAuthMangerImpl {
     private Handler mHandler;
     ExecutorService mExecutor = Executors.newFixedThreadPool(1);
     private IInitCallBack mInitCallBack;
-
+    BuildPropertyUtil buildProperrtisUtil = new BuildPropertyUtil();
     public AuthManager() {
         mHandler = new Handler(Looper.getMainLooper());
     }
@@ -71,6 +69,7 @@ public class AuthManager extends IAuthMangerImpl {
         Intent intent = new Intent();
         intent.setAction(ACTION);
         intent.addCategory(Intent.CATEGORY_DEFAULT);
+        intent.setComponent(new ComponentName(PACKAGE_NAME,SERVICE_NAME));
         PackageManager packageManager = mContext.getApplicationContext().getPackageManager();
         ResolveInfo info = packageManager.resolveService(intent, 0);
         int bindResult;
@@ -88,6 +87,21 @@ public class AuthManager extends IAuthMangerImpl {
                 bindResult = -1;
                 if (mInitCallBack != null) {
                     mInitCallBack.onServiceConnected(bindResult);
+                }
+                if (buildProperrtisUtil.isEMUI()){
+                    Intent intentHuaWei  = new Intent();
+                    ComponentName componentNameHuaWei = new ComponentName("com.huawei.systemmanager","com.huawei.systemmanager.startupmgr.ui.StartupNormalAppListActivity");
+                    intentHuaWei.setComponent(componentNameHuaWei);
+                    intentHuaWei.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    mContext.startActivity(intentHuaWei);
+                    Toast.makeText(mContext,"需要将米家设置为允许被其他应用启动或者先启动米家，然后重新授权",Toast.LENGTH_LONG).show();
+                }else if (buildProperrtisUtil.isFlyme()){
+                    Intent it  = new Intent();
+                    ComponentName component = new ComponentName("com.meizu.safe","com.meizu.safe.permission.SmartBGActivity");
+                    it.setComponent(component);
+                    it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    mContext.startActivity(it);
+                    Toast.makeText(mContext,"需要将米家设置为允许后台运行，然后重新授权",Toast.LENGTH_LONG).show();
                 }
             }
         } else {
@@ -314,4 +328,5 @@ public class AuthManager extends IAuthMangerImpl {
     public int getSdkApiLevel() {
         return BuildConfig.VERSION_CODE;
     }
+
 }
