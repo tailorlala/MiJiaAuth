@@ -12,17 +12,14 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
-import android.os.RemoteException;
-import android.util.Log;
-import android.widget.Toast;
+
+import com.xiaomi.smarthome.auth.model.AuthCallBackInfo;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
-import static android.content.Context.BIND_AUTO_CREATE;
 
 /**
  * Time 2017/4/13.
@@ -34,17 +31,19 @@ public class AuthManager extends IAuthMangerImpl {
     private static final String TAG = "AuthManager";
     private static final String PACKAGE_NAME = "com.xiaomi.smarthome";
     private static final String SERVICE_NAME = "com.xiaomi.smarthome.auth.AuthService";
-    private static final String ACTION = "com.xiaomi.smarthome.action.AuthService";
+    //    private static final String ACTION = "com.xiaomi.smarthome.action.AuthService";
+    private static final String ACTION = "com.xiaomi.smarthome.action.authactivity";
+    private static final String REQUEST_CODE_AUTH = "request_auth_code";
+
     Context mContext;
     private static volatile AuthManager INSTANCE;
-    private IAuthResponse mAuthResponse;
-    private ICallAuth mCallAuth;
+    //    private ICallAuth mCallAuth;
     private boolean isServiceConn = false;
     private boolean bindSuccess = false;
     private Handler mHandler;
-    ExecutorService mExecutor = Executors.newFixedThreadPool(1);
     private IInitCallBack mInitCallBack;
-    BuildPropertyUtil buildProperrtisUtil = new BuildPropertyUtil();
+    private IAuthCallBack mAuthCallBack;
+    private IAuthResponse mAuthResponse;
     public AuthManager() {
         mHandler = new Handler(Looper.getMainLooper());
     }
@@ -65,7 +64,7 @@ public class AuthManager extends IAuthMangerImpl {
         return initService();
     }
 
-    private int initService() {
+    /*private int initService() {
         Intent intent = new Intent();
         intent.setAction(ACTION);
         intent.addCategory(Intent.CATEGORY_DEFAULT);
@@ -121,7 +120,7 @@ public class AuthManager extends IAuthMangerImpl {
             mInitCallBack.onServiceConnected(bindResult);
         }
         return bindResult;
-    }
+    }*/
     /*private boolean initService() {
         Intent intent = new Intent();
         ComponentName componentName = new ComponentName(PACKAGE_NAME, SERVICE_NAME);
@@ -133,8 +132,45 @@ public class AuthManager extends IAuthMangerImpl {
         }*//*
         return bindSuccess;
     }*/
+    private int initService() {
+        Intent intent = new Intent(mContext, AuthService.class);
+        bindSuccess = mContext.bindService(intent, conn, Context.BIND_AUTO_CREATE);
+        if (bindSuccess && isServiceConn){
+            if (mInitCallBack != null) {
+                mInitCallBack.onServiceConnected(0);
+            }
+        }
+        if (bindSuccess) {
+            return 0;
+        } else {
+            return -1;
+        }
 
-    ServiceConnection connection = new ServiceConnection() {
+    }
+
+    ServiceConnection conn = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            isServiceConn = true;
+            AuthLog.log("onServiceConnected");
+            mAuthCallBack = IAuthCallBack.Stub.asInterface(service);
+            if (mInitCallBack != null) {
+                mInitCallBack.onServiceConnected(0);
+            }
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            AuthLog.log("onServiceDisconnected");
+            isServiceConn = false;
+            if (mInitCallBack != null) {
+                mInitCallBack.onServiceDisConnected();
+            }
+        }
+    };
+
+
+    /*ServiceConnection connection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             AuthLog.log("onServiceConnected");
@@ -154,7 +190,7 @@ public class AuthManager extends IAuthMangerImpl {
                 mInitCallBack.onServiceDisConnected();
             }
         }
-    };
+    };*/
 
     private int initAuth(Context context) {
         this.mContext = context;
@@ -162,7 +198,7 @@ public class AuthManager extends IAuthMangerImpl {
         return initService();
     }
 
-    @Override
+   /* @Override
     public boolean callAuth(final Context context, final Bundle data, final int requestCode, IAuthResponse response) {
         this.mContext = context;
         AuthLog.log("mCallAuth " + mCallAuth + "  isServiceConn " + isServiceConn + "  bindSuccess  " + bindSuccess);
@@ -195,9 +231,54 @@ public class AuthManager extends IAuthMangerImpl {
             }
         });
         return true;
+    }*/
+
+    @Override
+    public boolean callAuth(final Context context, final Bundle data, final int requestCode, IAuthResponse response) {
+        this.mContext = context;
+        AuthLog.log("  isServiceConn " + isServiceConn + "  bindSuccess  " + bindSuccess);
+        mAuthResponse = response;
+
+        if (!bindSuccess || mAuthCallBack == null || !isServiceConn) {
+//            Toast.makeText(mContext, "请确认已经安装了米家，并且更新到最新的版本", Toast.LENGTH_SHORT).show();
+            mAuthResponse.onFail(AuthCode.REQUEST_SERVICE_DISCONNECT,null);
+            return false;
+        }
+//        mAuthService.setAuthResponse(response);
+        Bundle bundle;
+        if (data == null) {
+            bundle = new Bundle();
+        } else {
+            bundle = data;
+        }
+        bundle.putString(AuthConstants.EXTRA_APP_SIGN, getAppSignature());
+        bundle.putString(AuthConstants.EXTRA_PACKAGE_NAME, context.getPackageName());
+        bundle.putInt(AuthConstants.EXTRA_SDK_VERSION_CODE, BuildConfig.VERSION_CODE);
+        bundle.putString(AuthConstants.EXTRA_SDK_VERSION_NAME, BuildConfig.VERSION_NAME);
+        data.putInt(REQUEST_CODE_AUTH,requestCode);
+        AuthCallBackInfo info = new AuthCallBackInfo();
+        info.mAuthCallBack = mAuthCallBack;
+        bundle.putParcelable(AuthConstants.EXTRA_AUTH_CALLBACK, info);
+        Intent intent = new Intent();
+        intent.setAction(ACTION);
+        PackageManager pm = mContext.getPackageManager();
+        ResolveInfo activityInfo = pm.resolveActivity(intent, PackageManager.COMPONENT_ENABLED_STATE_DEFAULT);
+        if (activityInfo != null) {
+            ComponentName name = new ComponentName(activityInfo.activityInfo.packageName, activityInfo.activityInfo.name);
+            intent.setComponent(name);
+            intent.putExtras(bundle);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            mContext.startActivity(intent);
+            return true;
+//                        startActivity(intent);
+        } else {
+            mAuthResponse.onFail(AuthCode.REQUEST_MIJIA_VERSION_ERR,null);
+            return false;
+        }
+
     }
 
-    private IAuthCallBack mCallBack = new IAuthCallBack.Stub() {
+    /*private IAuthCallBack mCallBack = new IAuthCallBack.Stub() {
         @Override
         public void onSuccess(final int code, final Bundle data) throws RemoteException {
             AuthLog.log("onSuccess" + " code " + code + " data " + data.toString());
@@ -227,7 +308,7 @@ public class AuthManager extends IAuthMangerImpl {
                 });
             }
         }
-    };
+    };*/
 
 
     private String getAppSignature() {
@@ -308,9 +389,11 @@ public class AuthManager extends IAuthMangerImpl {
     public void release() {
         try {
             AuthLog.log("isServiceConn" + isServiceConn);
-            if (bindSuccess && connection != null && mContext != null && isServiceConn) {
-                mContext.getApplicationContext().unbindService(connection);
+            if (bindSuccess && conn != null && mContext != null && isServiceConn) {
+                mContext.getApplicationContext().unbindService(conn);
             }
+            if (INSTANCE != null)
+                INSTANCE = null;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -329,4 +412,12 @@ public class AuthManager extends IAuthMangerImpl {
         return BuildConfig.VERSION_CODE;
     }
 
+    public IAuthResponse getAuthResponse() {
+        return mAuthResponse;
+    }
+
+
+    public Handler getHandler() {
+        return mHandler;
+    }
 }

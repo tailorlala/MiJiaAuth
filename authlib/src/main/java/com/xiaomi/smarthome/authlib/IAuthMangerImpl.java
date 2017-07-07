@@ -46,11 +46,11 @@ public abstract class IAuthMangerImpl {
     public static IAuthMangerImpl getInstance(){
         if (INSTANCE == null) {
             synchronized (IAuthMangerImpl.class) {
-                INSTANCE = new AuthManager();
+                INSTANCE = AuthManager.getInstance();
             }
         }
         return INSTANCE;
-    };
+    }
 
     /**
      * 给没有生命周期的初始化，像RN等

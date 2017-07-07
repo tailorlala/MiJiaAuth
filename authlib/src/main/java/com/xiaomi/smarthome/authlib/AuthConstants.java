@@ -18,7 +18,7 @@ public class AuthConstants {
     public static final String EXTRA_SDK_VERSION_NAME = "sdk_version_name";
     public static final String EXTRA_DEVICE_TOKEN_TIMESTAMP = "token_timestamp";
     public static final String EXTRA_DEVICE_SN = "device_sn";
-
+    public static final String EXTRA_AUTH_CALLBACK = "extra_auth_callback";
     /**返回值*****/
     public static final String EXTRA_TOKEN = "extra_token";
     public static final String EXTRA_RESULT_CODE = "extra_result_code";

@@ -36,3 +36,4 @@
 -keep class  com.xiaomi.smarthome.authlib.AuthConstants{*;}
 -keep interface  com.xiaomi.smarthome.authlib.IAuthResponse{*;}
 -keep class com.xiaomi.smarthome.authlib.IInitCallBack{*;}
+-keep class com.xiaomi.smarthome.auth.model.AuthCallBackInfo{*;}

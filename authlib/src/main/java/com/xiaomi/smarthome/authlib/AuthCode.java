@@ -23,6 +23,8 @@ public class AuthCode {
     public static final int REQUEST_MISS_PARAMS = -112;
     public static final int REQUEST_BIND_ERROR = -113;
     public static final int REQUEST_API_LEVEL_ERR = -114;///版本号不匹配
+    public static final int REQUEST_SERVICE_DISCONNECT = -901;//service已经断开
+    public static final int REQUEST_MIJIA_VERSION_ERR = -902;//可能没有安装米家，或者米家版本太低
 
     public static final int REQUEST_CODE_CALL_AUTH_FOR_APP = 4;//给应用授权
     public static final int REQUEST_CODE_CALL_AUTH_FOR_DEVICE = 2;//给设备授权
