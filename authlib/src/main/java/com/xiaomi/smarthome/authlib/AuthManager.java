@@ -241,7 +241,9 @@ public class AuthManager extends IAuthMangerImpl {
 
         if (!bindSuccess || mAuthCallBack == null || !isServiceConn) {
 //            Toast.makeText(mContext, "请确认已经安装了米家，并且更新到最新的版本", Toast.LENGTH_SHORT).show();
-            mAuthResponse.onFail(AuthCode.REQUEST_SERVICE_DISCONNECT,null);
+            Bundle errBundle = new Bundle();
+            errBundle.putInt(AuthConstants.EXTRA_RESULT_CODE,AuthCode.REQUEST_SERVICE_DISCONNECT);
+            mAuthResponse.onFail(AuthCode.REQUEST_SERVICE_DISCONNECT,errBundle);
             return false;
         }
 //        mAuthService.setAuthResponse(response);
@@ -272,7 +274,9 @@ public class AuthManager extends IAuthMangerImpl {
             return true;
 //                        startActivity(intent);
         } else {
-            mAuthResponse.onFail(AuthCode.REQUEST_MIJIA_VERSION_ERR,null);
+            Bundle errBundle = new Bundle();
+            errBundle.putInt(AuthConstants.EXTRA_RESULT_CODE,AuthCode.REQUEST_MIJIA_VERSION_ERR);
+            mAuthResponse.onFail(AuthCode.REQUEST_MIJIA_VERSION_ERR,errBundle);
             return false;
         }
 

@@ -105,6 +105,8 @@ public class AuthActivity extends Activity {
                     @Override
                     public void onFail(int i, Bundle bundle) {
                         StringBuilder sb = new StringBuilder();
+                        if (bundle == null)
+                            return;
                         sb.append("结果：").append("\n")
                                 .append("resultCode：").append(bundle.getInt(AuthConstants.EXTRA_RESULT_CODE, -1)).append("\n")
                                 .append("resultMsg：").append(bundle.getString(AuthConstants.EXTRA_RESULT_MSG, "")).append("\n")
