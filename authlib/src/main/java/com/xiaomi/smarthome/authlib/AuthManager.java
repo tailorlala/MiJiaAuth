@@ -237,14 +237,19 @@ public class AuthManager extends IAuthMangerImpl {
     @Override
     public boolean callAuth(final Context context, final Bundle data, final int requestCode, IAuthResponse response) {
         this.mContext = context;
-        AuthLog.log("  isServiceConn " + isServiceConn + "  bindSuccess  " + bindSuccess + " response" + response);
+        AuthLog.log("  isServiceConn " + isServiceConn + "  bindSuccess  " + bindSuccess + " response" + response + "  requestCode" + requestCode);
         mAuthResponse = response;
-
         if (!bindSuccess || mAuthCallBack == null || !isServiceConn) {
 //            Toast.makeText(mContext, "请确认已经安装了米家，并且更新到最新的版本", Tloast.LENGTH_SHORT).show();
             Bundle errBundle = new Bundle();
             errBundle.putInt(AuthConstants.EXTRA_RESULT_CODE, AuthCode.REQUEST_SERVICE_DISCONNECT);
             mAuthResponse.onFail(AuthCode.REQUEST_SERVICE_DISCONNECT, errBundle);
+            return false;
+        }
+        if (response == null){
+            Bundle errBundle = new Bundle();
+            errBundle.putInt(AuthConstants.EXTRA_RESULT_CODE, AuthCode.REQUEST_NO_RESPONSE);
+            mAuthResponse.onFail(AuthCode.REQUEST_NO_RESPONSE, errBundle);
             return false;
         }
 //        mAuthService.setAuthResponse(response);
@@ -394,7 +399,9 @@ public class AuthManager extends IAuthMangerImpl {
     public void release() {
         try {
             AuthLog.log("isServiceConn" + isServiceConn);
+            AuthLog.log("release");
             if (bindSuccess && conn != null && mContext != null && isServiceConn) {
+                AuthLog.log("unbindService");
                 mContext.getApplicationContext().unbindService(conn);
             }
             if (INSTANCE != null)
