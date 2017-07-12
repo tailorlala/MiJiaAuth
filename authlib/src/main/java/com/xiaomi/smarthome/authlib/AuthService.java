@@ -28,6 +28,7 @@ public class AuthService extends Service {
         @Override
         public void onSuccess(final int code, final Bundle data) throws RemoteException {
             AuthLog.log("onSuccess" + " code " + code);
+            AuthLog.log("AuthManager.getInstance().getAuthResponse()" + AuthManager.getInstance().getAuthResponse());
             mHandler = AuthManager.getInstance().getHandler();
             if (mHandler == null) {
                 mHandler = new Handler(Looper.getMainLooper());
@@ -35,7 +36,8 @@ public class AuthService extends Service {
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    if (AuthManager.getInstance().getAuthResponse() != null){
+                    if (AuthManager.getInstance().getAuthResponse() != null) {
+                        AuthLog.log("AuthManager.getInstance().getAuthResponse()  onSuccess" + code);
                         AuthManager.getInstance().getAuthResponse().onSuccess(code, data);
                     }
                 }
@@ -45,6 +47,7 @@ public class AuthService extends Service {
         @Override
         public void onFail(final int code, final Bundle result) throws RemoteException {
             AuthLog.log("onFail" + " code " + code);
+            AuthLog.log("AuthManager.getInstance().getAuthResponse()" + AuthManager.getInstance().getAuthResponse());
             mHandler = AuthManager.getInstance().getHandler();
             if (AuthManager.getInstance().getAuthResponse() != null) {
                 if (mHandler == null) {
@@ -53,6 +56,7 @@ public class AuthService extends Service {
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
+                        AuthLog.log("AuthManager.getInstance().getAuthResponse()  onFail" + code);
                         AuthManager.getInstance().getAuthResponse().onFail(code, result);
                     }
                 });
