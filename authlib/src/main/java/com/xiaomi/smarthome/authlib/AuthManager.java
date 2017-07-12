@@ -44,6 +44,7 @@ public class AuthManager extends IAuthMangerImpl {
     private IInitCallBack mInitCallBack;
     private IAuthCallBack mAuthCallBack;
     private IAuthResponse mAuthResponse;
+
     public AuthManager() {
         mHandler = new Handler(Looper.getMainLooper());
     }
@@ -135,7 +136,7 @@ public class AuthManager extends IAuthMangerImpl {
     private int initService() {
         Intent intent = new Intent(mContext, AuthService.class);
         bindSuccess = mContext.bindService(intent, conn, Context.BIND_AUTO_CREATE);
-        if (bindSuccess && isServiceConn){
+        if (bindSuccess && isServiceConn) {
             if (mInitCallBack != null) {
                 mInitCallBack.onServiceConnected(0);
             }
@@ -236,14 +237,14 @@ public class AuthManager extends IAuthMangerImpl {
     @Override
     public boolean callAuth(final Context context, final Bundle data, final int requestCode, IAuthResponse response) {
         this.mContext = context;
-        AuthLog.log("  isServiceConn " + isServiceConn + "  bindSuccess  " + bindSuccess);
+        AuthLog.log("  isServiceConn " + isServiceConn + "  bindSuccess  " + bindSuccess + " response" + response);
         mAuthResponse = response;
 
         if (!bindSuccess || mAuthCallBack == null || !isServiceConn) {
-//            Toast.makeText(mContext, "请确认已经安装了米家，并且更新到最新的版本", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(mContext, "请确认已经安装了米家，并且更新到最新的版本", Tloast.LENGTH_SHORT).show();
             Bundle errBundle = new Bundle();
-            errBundle.putInt(AuthConstants.EXTRA_RESULT_CODE,AuthCode.REQUEST_SERVICE_DISCONNECT);
-            mAuthResponse.onFail(AuthCode.REQUEST_SERVICE_DISCONNECT,errBundle);
+            errBundle.putInt(AuthConstants.EXTRA_RESULT_CODE, AuthCode.REQUEST_SERVICE_DISCONNECT);
+            mAuthResponse.onFail(AuthCode.REQUEST_SERVICE_DISCONNECT, errBundle);
             return false;
         }
 //        mAuthService.setAuthResponse(response);
@@ -257,7 +258,7 @@ public class AuthManager extends IAuthMangerImpl {
         bundle.putString(AuthConstants.EXTRA_PACKAGE_NAME, context.getPackageName());
         bundle.putInt(AuthConstants.EXTRA_SDK_VERSION_CODE, BuildConfig.VERSION_CODE);
         bundle.putString(AuthConstants.EXTRA_SDK_VERSION_NAME, BuildConfig.VERSION_NAME);
-        data.putInt(REQUEST_CODE_AUTH,requestCode);
+        data.putInt(REQUEST_CODE_AUTH, requestCode);
         AuthCallBackInfo info = new AuthCallBackInfo();
         info.mAuthCallBack = mAuthCallBack;
         bundle.putParcelable(AuthConstants.EXTRA_AUTH_CALLBACK, info);
@@ -275,8 +276,8 @@ public class AuthManager extends IAuthMangerImpl {
 //                        startActivity(intent);
         } else {
             Bundle errBundle = new Bundle();
-            errBundle.putInt(AuthConstants.EXTRA_RESULT_CODE,AuthCode.REQUEST_MIJIA_VERSION_ERR);
-            mAuthResponse.onFail(AuthCode.REQUEST_MIJIA_VERSION_ERR,errBundle);
+            errBundle.putInt(AuthConstants.EXTRA_RESULT_CODE, AuthCode.REQUEST_MIJIA_VERSION_ERR);
+            mAuthResponse.onFail(AuthCode.REQUEST_MIJIA_VERSION_ERR, errBundle);
             return false;
         }
 
