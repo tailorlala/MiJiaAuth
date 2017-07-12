@@ -28,7 +28,7 @@ public class AuthService extends Service {
         @Override
         public void onSuccess(final int code, final Bundle data) throws RemoteException {
             AuthLog.log("onSuccess" + " code " + code);
-            AuthLog.log("AuthManager.getInstance().getAuthResponse()" + AuthManager.getInstance().getAuthResponse());
+            AuthLog.log("   INSTANCE"+AuthManager.getInstance()+"    AuthManager.getInstance().getAuthResponse()" + AuthManager.getInstance().getAuthResponse());
             mHandler = AuthManager.getInstance().getHandler();
             if (mHandler == null) {
                 mHandler = new Handler(Looper.getMainLooper());

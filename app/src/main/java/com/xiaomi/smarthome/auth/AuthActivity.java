@@ -27,7 +27,7 @@ public class AuthActivity extends Activity {
     ImageView mAppIcon;
     EditText mAppIdET;
     EditText mDeviceET;
-
+    Button mRelase;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,6 +38,7 @@ public class AuthActivity extends Activity {
         mAppIcon = (ImageView) findViewById(R.id.app_icon);
         mAppIdET = (EditText) findViewById(R.id.app_id);
         mDeviceET = (EditText) findViewById(R.id.device);
+        mRelase = (Button) findViewById(R.id.release_btn);
         /*int isResult =  IAuthMangerImpl.getInstance().init(AuthActivity.this);///初始化
         if (isResult != 0){
             Toast.makeText(AuthActivity.this, "请确认已经安装了米家，并且更新到最新的版本啦", Toast.LENGTH_SHORT).show();
@@ -52,7 +53,7 @@ public class AuthActivity extends Activity {
                         @Override
                         public void onServiceConnected(int result) {
 //                        Toast.makeText(AuthActivity.this, "已经初始化完毕啦", Toast.LENGTH_SHORT).show();
-                            Log.d("AuthActivity","IAuthMangerImpl.getInstance().getSdkApiLevel()" + IAuthMangerImpl.getInstance().getSdkApiLevel());
+                            Log.d("AuthActivity","IAuthMangerImpl.getInstance().getSdkApiLevel()" + IAuthMangerImpl.getInstance().getSdkApiLevel()+"   result:    "+result);
                             onAuthClick(AuthCode.REQUEST_CODE_CALL_AUTH_FOR_DEVICE);
                         }
 
@@ -67,6 +68,13 @@ public class AuthActivity extends Activity {
                                            }
                                        }
         );
+
+        mRelase.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                IAuthMangerImpl.getInstance().release();
+            }
+        });
     }
 
     private void onAuthClick(int requestCode) {

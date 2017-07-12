@@ -53,6 +53,7 @@ public class AuthManager extends IAuthMangerImpl {
         if (INSTANCE == null) {
             synchronized (AuthManager.class) {
                 INSTANCE = new AuthManager();
+                AuthLog.log("new AuthManager()");
             }
         }
         return INSTANCE;
@@ -135,10 +136,11 @@ public class AuthManager extends IAuthMangerImpl {
     }*/
     private int initService() {
         Intent intent = new Intent(mContext, AuthService.class);
-        bindSuccess = mContext.bindService(intent, conn, Context.BIND_AUTO_CREATE);
+        bindSuccess = mContext.getApplicationContext().bindService(intent, conn, Context.BIND_AUTO_CREATE);
         if (bindSuccess && isServiceConn) {
             if (mInitCallBack != null) {
                 mInitCallBack.onServiceConnected(0);
+                AuthLog.log("onServiceConnected     initService   1");
             }
         }
         if (bindSuccess) {
@@ -237,8 +239,9 @@ public class AuthManager extends IAuthMangerImpl {
     @Override
     public boolean callAuth(final Context context, final Bundle data, final int requestCode, IAuthResponse response) {
         this.mContext = context;
-        AuthLog.log("  isServiceConn " + isServiceConn + "  bindSuccess  " + bindSuccess + " response" + response + "  requestCode" + requestCode);
+        AuthLog.log("  isServiceConn " + isServiceConn + "  bindSuccess  " + bindSuccess + " response" + response + "  requestCode" + requestCode + "   INSTANCE_   " + INSTANCE);
         mAuthResponse = response;
+//        AuthManager.getInstance().setAuthResponse(response);
         if (!bindSuccess || mAuthCallBack == null || !isServiceConn) {
 //            Toast.makeText(mContext, "请确认已经安装了米家，并且更新到最新的版本", Tloast.LENGTH_SHORT).show();
             Bundle errBundle = new Bundle();
@@ -246,7 +249,7 @@ public class AuthManager extends IAuthMangerImpl {
             mAuthResponse.onFail(AuthCode.REQUEST_SERVICE_DISCONNECT, errBundle);
             return false;
         }
-        if (response == null){
+        if (response == null) {
             Bundle errBundle = new Bundle();
             errBundle.putInt(AuthConstants.EXTRA_RESULT_CODE, AuthCode.REQUEST_NO_RESPONSE);
             mAuthResponse.onFail(AuthCode.REQUEST_NO_RESPONSE, errBundle);
@@ -403,11 +406,16 @@ public class AuthManager extends IAuthMangerImpl {
             if (bindSuccess && conn != null && mContext != null && isServiceConn) {
                 AuthLog.log("unbindService");
                 mContext.getApplicationContext().unbindService(conn);
+                bindSuccess = false;
+                isServiceConn = false;
             }
-            if (INSTANCE != null)
+            if (INSTANCE != null){
                 INSTANCE = null;
+            }
+            AuthLog.log("release  INSTANCE" + INSTANCE);
         } catch (Exception e) {
             e.printStackTrace();
+            AuthLog.log(e.getMessage());
         }
     }
 
@@ -428,6 +436,9 @@ public class AuthManager extends IAuthMangerImpl {
         return mAuthResponse;
     }
 
+    public void setAuthResponse(IAuthResponse mAuthResponse) {
+        this.mAuthResponse = mAuthResponse;
+    }
 
     public Handler getHandler() {
         return mHandler;

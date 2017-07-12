@@ -10,29 +10,7 @@ import android.os.Bundle;
  */
 
 public abstract class IAuthMangerImpl {
-    protected static IAuthMangerImpl INSTANCE = null;
-    /*AuthManager mAuthManager = AuthManager.getInstance();
-    private static IAuthMangerImpl INSTANCE;
-    public static IAuthMangerImpl getInstance() {
-        if (INSTANCE == null) {
-            synchronized (AuthManager.class) {
-                INSTANCE = new IAuthMangerImpl();
-            }
-        }
-        return INSTANCE;
-    }
 
-    public void release() {
-        mAuthManager.release();
-    }
-
-    public boolean init(Context context) {
-       return mAuthManager.initAuth(context);
-    }
-
-    public boolean callAuth(final Context context, final Bundle data, final int requestCode, IAuthResponse response) {
-        return mAuthManager.callAuth(context,data,requestCode,response);
-    }*/
     public abstract void release();
     public abstract boolean callAuth(final Context context, final Bundle data, final int requestCode, IAuthResponse response);
 
@@ -44,12 +22,7 @@ public abstract class IAuthMangerImpl {
      */
     public abstract int init(Context context);
     public static IAuthMangerImpl getInstance(){
-        if (INSTANCE == null) {
-            synchronized (IAuthMangerImpl.class) {
-                INSTANCE = AuthManager.getInstance();
-            }
-        }
-        return INSTANCE;
+        return AuthManager.getInstance();
     }
 
     /**
