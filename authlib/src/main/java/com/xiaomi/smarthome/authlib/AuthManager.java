@@ -266,7 +266,7 @@ public class AuthManager extends IAuthMangerImpl {
         bundle.putString(AuthConstants.EXTRA_PACKAGE_NAME, context.getPackageName());
         bundle.putInt(AuthConstants.EXTRA_SDK_VERSION_CODE, BuildConfig.VERSION_CODE);
         bundle.putString(AuthConstants.EXTRA_SDK_VERSION_NAME, BuildConfig.VERSION_NAME);
-        data.putInt(REQUEST_CODE_AUTH, requestCode);
+        bundle.putInt(REQUEST_CODE_AUTH, requestCode);
         AuthCallBackInfo info = new AuthCallBackInfo();
         info.mAuthCallBack = mAuthCallBack;
         bundle.putParcelable(AuthConstants.EXTRA_AUTH_CALLBACK, info);
