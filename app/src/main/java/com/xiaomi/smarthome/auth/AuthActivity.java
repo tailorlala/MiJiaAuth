@@ -54,7 +54,7 @@ public class AuthActivity extends Activity {
                         public void onServiceConnected(int result) {
 //                        Toast.makeText(AuthActivity.this, "已经初始化完毕啦", Toast.LENGTH_SHORT).show();
                             Log.d("AuthActivity","IAuthMangerImpl.getInstance().getSdkApiLevel()" + IAuthMangerImpl.getInstance().getSdkApiLevel()+"   result:    "+result);
-                            onAuthClick(AuthCode.REQUEST_CODE_CALL_AUTH_FOR_DEVICE);
+                            onAuthClick(AuthCode.REQUEST_CODE_CALL_AUTH_FOR_BIND_DEVICE);
                         }
 
                     });
@@ -93,6 +93,7 @@ public class AuthActivity extends Activity {
 //            bundle.putString(AuthConstants.EXTRA_DEVICE_DID,"58067337");
             bundle.putString(AuthConstants.EXTRA_DEVICE_DID, mDeviceET.getText().toString());
         }
+        bundle.putString(AuthConstants.EXTRA_DEVICE_DID, mDeviceET.getText().toString());
         //发起授权
         boolean isSuccess = IAuthMangerImpl.getInstance().callAuth(AuthActivity.this, bundle, requestCode, new IAuthResponse() {
                     @Override
