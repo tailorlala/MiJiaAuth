@@ -1,5 +1,6 @@
 package com.xiaomi.smarthome.authlib;
 
+import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -34,6 +35,7 @@ public class AuthManager extends IAuthMangerImpl {
     //    private static final String ACTION = "com.xiaomi.smarthome.action.AuthService";
     private static final String ACTION = "com.xiaomi.smarthome.action.authactivity";
     private static final String REQUEST_CODE_AUTH = "request_auth_code";
+    private static final String EXTRA_AUTH_TIMESTAMP = "extra_auth_timestamp";
 
     Context mContext;
     private static volatile AuthManager INSTANCE;
@@ -266,6 +268,7 @@ public class AuthManager extends IAuthMangerImpl {
         bundle.putString(AuthConstants.EXTRA_PACKAGE_NAME, context.getPackageName());
         bundle.putInt(AuthConstants.EXTRA_SDK_VERSION_CODE, BuildConfig.VERSION_CODE);
         bundle.putString(AuthConstants.EXTRA_SDK_VERSION_NAME, BuildConfig.VERSION_NAME);
+        bundle.putLong(EXTRA_AUTH_TIMESTAMP,System.currentTimeMillis());
         bundle.putInt(REQUEST_CODE_AUTH, requestCode);
         AuthCallBackInfo info = new AuthCallBackInfo();
         info.mAuthCallBack = mAuthCallBack;
@@ -278,7 +281,10 @@ public class AuthManager extends IAuthMangerImpl {
             ComponentName name = new ComponentName(activityInfo.activityInfo.packageName, activityInfo.activityInfo.name);
             intent.setComponent(name);
             intent.putExtras(bundle);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            if (!(mContext instanceof Activity)){
+                AuthLog.log("!(mContext instanceof Activity)");
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            }
             mContext.startActivity(intent);
             return true;
 //                        startActivity(intent);

@@ -54,7 +54,7 @@ public class AuthActivity extends Activity {
                         public void onServiceConnected(int result) {
 //                        Toast.makeText(AuthActivity.this, "已经初始化完毕啦", Toast.LENGTH_SHORT).show();
                             Log.d("AuthActivity","IAuthMangerImpl.getInstance().getSdkApiLevel()" + IAuthMangerImpl.getInstance().getSdkApiLevel()+"   result:    "+result);
-                            onAuthClick(AuthCode.REQUEST_CODE_CALL_AUTH_FOR_BIND_DEVICE);
+                            onAuthClick(AuthCode.REQUEST_CODE_CALL_AUTH_FOR_DEVICE);
                         }
 
                     });
