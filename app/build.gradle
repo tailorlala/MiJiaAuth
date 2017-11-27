@@ -26,7 +26,9 @@ android {
             signingConfig signingConfigs.mijia_auth
         }
         debug {
+            minifyEnabled true
             signingConfig signingConfigs.mijia_auth
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
 }
@@ -42,6 +44,7 @@ dependencies {
     })
     compile 'com.android.support:appcompat-v7:25.1.0'
     testCompile 'junit:junit:4.12'
-    //    compile(name:'authlib-release', ext:"aar")
-    compile project(':authlib')
+//        compile(name:'mijia_authlib_1.1.3', ext:"aar")
+        compile(name:'authlib-debug', ext:"aar")
+//    compile project(':authlib')
 }

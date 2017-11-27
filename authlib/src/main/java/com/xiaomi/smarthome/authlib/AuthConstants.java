@@ -12,13 +12,18 @@ public class AuthConstants {
     public static final String EXTRA_PACKAGE_NAME = "extra_package_name";
     public static final String EXTRA_APP_SIGN = "extra_app_sign";
     public static final String EXTRA_DEVICE_DID = "device_id";
-    public static final String EXTRA_DEVICE_TOKEN = "device_token";
     public static final int ACTIVITY_RESULT_FAIL = -2;
     public static final String EXTRA_SDK_VERSION_CODE ="sdk_version_code";
     public static final String EXTRA_SDK_VERSION_NAME = "sdk_version_name";
-    public static final String EXTRA_DEVICE_TOKEN_TIMESTAMP = "token_timestamp";
-    public static final String EXTRA_DEVICE_SN = "device_sn";
     public static final String EXTRA_AUTH_CALLBACK = "extra_auth_callback";
+    public static final String EXTRA_DEVICE_BIND_KEY = "device_bind_key";
+
+
+//    public static final String EXTRA_DEVICE_TOKEN_TIMESTAMP = "token_timestamp";
+//    public static final String EXTRA_DEVICE_SN = "device_sn";
+//    public static final String EXTRA_DEVICE_TOKEN = "device_token";
+
+
     /**返回值*****/
     public static final String EXTRA_TOKEN = "extra_token";
     public static final String EXTRA_RESULT_CODE = "extra_result_code";
