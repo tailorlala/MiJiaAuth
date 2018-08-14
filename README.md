@@ -30,7 +30,8 @@ IAuthMangerImpl.getInstance().init(AuthActivity.this);///初始化
    Bundle bundle = new Bundle();
    bundle.putString(AuthConstants.EXTRA_APPLICATION_ID, "app_id");
    if (requestCode == AuthCode.REQUEST_CODE_CALL_AUTH_FOR_DEVICE){
-        bundle.putString(AuthConstants.EXTRA_DEVICE_DID,"device_id");    
+        bundle.putString(AuthConstants.EXTRA_DEVICE_DID,"device_id");
+        bundle.putString(AuthConstants.EXTRA_USER_ID,"user_id");//如果需要判断账号一致性，需要传入小米账号。账号不一致弹框提示用户，引导返回。
         }               
  </pre></code>
  
